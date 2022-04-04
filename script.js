@@ -55,3 +55,28 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
 });
+
+// Tabbed component
+
+const tabs = document.querySelectorAll('.operations__tab');
+const tabContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+tabContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
+
+  // guard clause
+  if (!clicked) return;
+  // remove tab
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  // remove content
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+  // active tab
+  clicked.classList.add('operations__tab--active');
+
+  // active content
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
