@@ -60,7 +60,7 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
   }
 });
 
-// Tabbed component
+/////////////// Tabbed component /////////////
 
 tabContainer.addEventListener('click', function (e) {
   const clicked = e.target.closest('.operations__tab');
@@ -81,7 +81,7 @@ tabContainer.addEventListener('click', function (e) {
     .classList.add('operations__content--active');
 });
 
-// Menu fade animation
+/////////////// Menu fade animation /////////////
 
 const handleHover = function (e) {
   if (e.target.classList.contains('nav__link')) {
@@ -109,7 +109,7 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 //   else nav.classList.remove('sticky');
 // });
 
-// another way (best way)
+// another way (best way) using intersection API
 const header = document.querySelector('.header');
 
 const headerHeight = nav.getBoundingClientRect().height;
@@ -133,7 +133,7 @@ const allSections = document.querySelectorAll('.section');
 
 const observeCall = function (entries, observer) {
   const [entry] = entries;
-  console.log(entry);
+  // console.log(entry);
   if (!entry.isIntersecting) return;
   entry.target.classList.remove('section--hidden');
   observer.unobserve(entry.target);
@@ -144,3 +144,26 @@ const sectionObserver = new IntersectionObserver(observeCall, {
 });
 
 allSections.forEach(section => sectionObserver.observe(section));
+
+///////////////// Lazy loading images ////////////////
+
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+const callObserver = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+  // replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+  observer.unobserve(entry.target);
+};
+const imgObserver = new IntersectionObserver(callObserver, {
+  root: null,
+  threshold: 0,
+  rootMargin: '-200px',
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
