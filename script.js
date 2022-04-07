@@ -167,3 +167,81 @@ const imgObserver = new IntersectionObserver(callObserver, {
 });
 
 imgTargets.forEach(img => imgObserver.observe(img));
+
+///////////////// Slider Component ////////////////
+
+// slider
+const slider = function () {
+  let currSlide = 0;
+  const allSlides = document.querySelectorAll('.slide');
+  const slider = document.querySelector('.slider');
+  const btnRight = document.querySelector('.slider__btn--right');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const dotContainer = document.querySelector('.dots');
+
+  // functions
+  const creatDots = function () {
+    allSlides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class = "dots__dot" data-slide = '${i}'> </button>`
+      );
+    });
+  };
+
+  const activeDots = function (slide) {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
+    document
+      .querySelector(`.dots__dot[data-slide = "${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+
+  const gotoSlide = function (slide) {
+    allSlides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+      //-100% , 0%, 200%, 300%
+      //0% , 100%, 200%, 300%
+    );
+  };
+
+  const init = function () {
+    gotoSlide(0);
+    creatDots();
+    activeDots(0);
+  };
+
+  init();
+  const nextSlide = function () {
+    if (currSlide === maxSlide - 1) currSlide = 0;
+    else currSlide++;
+    gotoSlide(currSlide);
+    activeDots(currSlide);
+  };
+  const prevSlide = function () {
+    if (currSlide === 0) currSlide = maxSlide - 1;
+    else currSlide--;
+
+    gotoSlide(currSlide);
+    activeDots(currSlide);
+  };
+  const maxSlide = allSlides.length;
+  btnRight.addEventListener('click', nextSlide);
+  btnLeft.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', function (e) {
+    console.log(e);
+    if (e.key === 'ArrowRight') nextSlide();
+    e.key === 'ArrowLeft' && prevSlide();
+  });
+
+  dotContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('dots__dot')) {
+      const { slide } = e.target.dataset;
+      gotoSlide(slide);
+      activeDots(slide);
+    }
+  });
+};
+slider();
